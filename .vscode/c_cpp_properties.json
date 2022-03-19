@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/libft/include"
+            ],
+            "defines": [],
+            "macFrameworkPath": [
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "cppStandard": "c++98",
+            "intelliSenseMode": "macos-clang-arm64",
+            "cStandard": "c89",
+            "compilerArgs": [
+                "-Wall",
+                "-Werror",
+                "-Wextra"
+            ],
+            "compilerPath": "/usr/bin/gcc"
+        }
+    ],
+    "version": 4
+}
