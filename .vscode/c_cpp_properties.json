@@ -1,25 +1,35 @@
 {
+    "version": 4,
     "configurations": [
         {
             "name": "Mac",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/libft/include"
-            ],
-            "defines": [],
-            "macFrameworkPath": [
-                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
-            ],
-            "cppStandard": "c++98",
-            "intelliSenseMode": "macos-clang-arm64",
             "cStandard": "c89",
+            "intelliSenseMode": "macos-clang-arm64",
+            "compilerPath": "/usr/bin/clang",
             "compilerArgs": [
                 "-Wall",
                 "-Werror",
                 "-Wextra"
             ],
-            "compilerPath": "/usr/bin/gcc"
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/libft/include"
+            ]
+        },
+        {
+            "name": "Linux",
+            "cStandard": "c89",
+            "intelliSenseMode": "linux-clang-x64",
+            "compilerPath": "clang",
+            "compilerArgs": [
+                "-Wall",
+                "-Werror",
+                "-Wextra"
+            ],
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/libft/include"
+            ]
         }
-    ],
-    "version": 4
+    ]
 }
