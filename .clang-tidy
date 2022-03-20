@@ -1,0 +1,1 @@
+Checks: '-*,bugprone-*,cert-*-c,-cert-err34-c,clang-analyzer-core.u*,clang-analyzer-optin.p*,llvm*,misc-*,perf*'

@@ -1,0 +1,76 @@
+Language: Cpp
+BasedOnStyle: GNU
+
+AlignArrayOfStructures: None
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: AcrossComments
+
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+
+AllowShortBlocksOnASingleLine: Never
+AllowShortEnumsOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+AlwaysBreakAfterReturnType: All
+AlwaysBreakBeforeMultilineStrings: false
+
+BreakStringLiterals: true
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeElse: true
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+
+ColumnLimit: 80
+ReflowComments: true
+
+DeriveLineEnding: false
+DerivePointerAlignment: false
+
+IncludeBlocks: Merge
+SortIncludes: CaseInsensitive
+
+IndentWidth: 4
+ContinuationIndentWidth: 8
+
+IndentPPDirectives: AfterHash
+PPIndentWidth: 1
+
+InsertBraces: false
+RemoveBracesLLVM: true
+
+MaxEmptyLinesToKeep: 1
+SeparateDefinitionBlocks: Always
+
+PointerAligment: Right
+ReferenceAlignment: Right
+QualifierAligment: Custom
+QualifierOrder: ['static', 'type', 'const']
+
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAroundPointerQualifiers: Default
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeSquareBrackets: false
+SpacesInEmptyParentheses: false
+SpacesInCStyleCastParentheses: false
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: false
+SpacesInParenthesis: false
+SpacesInSquareBrackets: false
+
+UseTab: Always
+TabWidth: 4
+
+UseCRLF: false
