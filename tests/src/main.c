@@ -6,14 +6,26 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 22:50:11 by drossi            #+#    #+#             */
-/*   Updated: 2022/02/21 16:42:47 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/20 11:53:58 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <errno.h>
+#include <unistd.h>
 #include "get_next_line.h"
+
+static char	*_tos(int i)
+{
+	if (i == GNL_OK)
+		return ("[  OK  ] ");
+	if (i == GNL_EOF)
+		return ("[ DONE ] ");
+	if (i == GNL_ERR)
+		return ("[ WARN ] ");
+	return ("[!ERROR] ");
+}
 
 static int	_proc_stdio(void)
 {
@@ -23,50 +35,55 @@ static int	_proc_stdio(void)
 	while (1)
 	{
 		result = get_next_line(0, &line);
-		if (result == 1)
-			printf("[  OK  ] Desc: STDIN, Line: \"%s\"", line);
-		else if (result == 0)
-			printf("[ DONE ] Desc: STDIN, Line: \"%s\"", line);
-		else
-			printf("[ WARN ] Desc: STDIN, Line: \"%s\"", line);
+		printf("%sFD: STDIN, L: \"%s\"\n", _tos(result), line);
 		if (result != 1)
 			return (result);
 	}
 }
 
-static int	_proc_files(char **fnames, int count)
+static int	_proc_files(int *fds, int count)
 {
 	int		i_fds;
-	int		fds[1024];
 	char	*line;
 	int		result;
+	int		completed;
 
-	i_fds = 0;
-	while (i_fds < count)
-		fds[i_fds] = open(fnames[i_fds], O_RDONLY);
-	i_fds = 0;
-	while (i_fds < count)
+	completed = 0;
+	while (completed < count)
 	{
-		result = get_next_line(fds[i_fds++], &line);
-		if (result == 1)
-			printf("[  OK  ] Desc: %5d, Line: \"%s\"", fds[i_fds], line);
-		else if (result == 0)
-			printf("[ DONE ] Desc: %5d, Line: \"%s\"", fds[i_fds], line);
-		else
-			printf("[ WARN ] Desc: %5d, Line: \"%s\"", fds[i_fds], line);
-		free(line);
+		i_fds = -1;
+		while (++i_fds < count)
+		{
+			if (fds[i_fds] < 3 || read(fds[i_fds], NULL, 0))
+				continue ;
+			result = get_next_line(fds[i_fds], &line);
+			printf("%sFD: %2d, L: \"%s\"\n", _tos(result), fds[i_fds], line);
+			if (result == 1)
+				free(line);
+			else
+			{
+				completed++;
+				fds[i_fds] = -1;
+			}
+		}
 	}
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
+	int		fds[GNL_FD_MAX];
+	int		i_fds;
+
 	if (argc < 2)
 	{
 		return (_proc_stdio());
 	}
 	else
 	{
-		return (_proc_files(&argv[1], argc - 1));
+		i_fds = 0;
+		while (++i_fds < argc)
+			fds[i_fds - 1] = open(argv[i_fds], O_RDONLY);
+		return (_proc_files(fds, argc - 1));
 	}
 }
