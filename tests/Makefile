@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/18 14:42:34 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/19 16:44:25 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ LFT_INC := $(LFT_INC_DIR)
 LFT_LIB := ft
 LFT_OBJ := $(LFT_LIB_DIR)/lib$(LFT_LIB).a
 GNL_INC := $(GNL_INC_DIR)
-GNL_SRC := $(wildcard $(GNL_SRC_DIR)/**.c)
+GNL_SRC := $(wildcard $(GNL_SRC_DIR)/*.c)
 GNL_OBJ := $(patsubst $(GNL_SRC_DIR)/%.c,$(GNL_OBJ_DIR)/%.o,$(GNL_SRC))
 INC := $(INC_DIR)
 SRC := $(wildcard $(SRC_DIR)/*.c)
@@ -45,7 +45,7 @@ endif
 # Build, archive and index the static library
 $(NAME): $(OBJ) $(GNL_OBJ) $(LFT_OBJ)
 	$(info Building $@ as it was new or changed)
-	$(CC) $(CFLAGS) -L$(LFT_LIB_DIR) -l$(LFT_LIB) -o $@ $^ -v
+	@$(CC) $(CFLAGS) -L$(LFT_LIB_DIR) -l$(LFT_LIB) -o $@ $^
 
 # Build a single source file into its correspondent object file
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
