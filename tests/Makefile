@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/21 19:28:46 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/21 20:51:26 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,9 @@ OBJ := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
 # Compiler flags and defaults
 CC := clang
 CFLAGS += -Wall -Werror -Wextra
+
+# Norminette configuration
+NORMINETTE ?= python3 -m norminette
 
 ifeq ($(DEBUG),1)
 	$(info Configuring additional debug options.)
@@ -73,16 +76,8 @@ debug: CFLAGS += -fsanitize=address,undefined -fno-sanitize-recover=all -g -DDEB
 debug: all
 
 norme:
-	$(info Running Norminette ($(shell python3 -m norminette -v)) compliance tests)
-	@python3 -m norminette $(wildcard $(GNL_INC_DIR)/*.h) $(GNL_SRC) | grep "Error\|Warn"; exit 0
-
-symbols: CFLAGS += -fPIC
-symbols: $(LFT_OBJ) $(GNL_OBJ)
-	$(info Verifying usage of undefined (external) symbols)
-	@rm -f $(OBJ_DIR)/out.o
-	@$(CC) -Wl,--whole-archive $(LFT_OBJ) -Wl,--no-whole-archive -shared $(GNL_OBJ) -o $(OBJ_DIR)/out.o
-	@nm -uP $(OBJ_DIR)/out.o | grep -w "U"
-	@rm -f $(OBJ_DIR)/out.o $(LFT_OBJ) $(GNL_OBJ)
+	$(info Running Norminette ($(shell $(NORMINETTE) -v)) compliance tests)
+	@$(NORMINETTE) $(wildcard $(GNL_INC_DIR)/*.h) $(GNL_SRC) | grep "Error\|Warn"; exit 0
 
 moulinette: $(LFT_OBJ)
 	$(info Simulating build instructions like Moulinette according to GNL docs)
@@ -92,11 +87,14 @@ moulinette: $(LFT_OBJ)
 	@./test_gnl Makefile > /dev/null
 	@rm -rf test_gnl main.o get_next_line.o
 
-ifeq ($(shell uname -s),Linux)
-test: symbols
-endif
+symbols: $(GNL_OBJ)
+	$(info Verifying usage of undefined (external) symbols)
+	@$(MAKE) -C $(LFT_LIB_DIR) symbols > /dev/null
+	@ld -r $(GNL_OBJ) $(wildcard $(LFT_LIB_DIR)/build/**/*.o) -o packed.o
+	@nm -uP packed.o | grep -w "U"
+	@rm -f $(OBJ_DIR)/packed.o; exit 0
 
-test: moulinette debug norme
+test: moulinette debug norme symbols
 	$(info Running tests for $(NAME))
 	@ASAN_OPTIONS=abort_on_error=1:fast_unwind_on_malloc=1:detect_leaks=1 UBSAN_OPTIONS=print_stacktrace=1 G_SLICE=always-malloc G_DEBUG=gc-friendly ./$(NAME) --color --timed --verbose; exit 0
 	@$(MAKE) fclean > /dev/null
