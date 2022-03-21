@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/21 19:15:54 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/21 19:28:46 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,11 +84,19 @@ symbols: $(LFT_OBJ) $(GNL_OBJ)
 	@nm -uP $(OBJ_DIR)/out.o | grep -w "U"
 	@rm -f $(OBJ_DIR)/out.o $(LFT_OBJ) $(GNL_OBJ)
 
+moulinette: $(LFT_OBJ)
+	$(info Simulating build instructions like Moulinette according to GNL docs)
+	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o get_next_line.o -c ../get_next_line.c
+	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o main.o -c src/main.c
+	@clang -o test_gnl main.o get_next_line.o -I ../libft/includes -L ../libft -lft
+	@./test_gnl Makefile > /dev/null
+	@rm -rf test_gnl main.o get_next_line.o
+
 ifeq ($(shell uname -s),Linux)
 test: symbols
 endif
 
-test: debug norme
+test: moulinette debug norme
 	$(info Running tests for $(NAME))
 	@ASAN_OPTIONS=abort_on_error=1:fast_unwind_on_malloc=1:detect_leaks=1 UBSAN_OPTIONS=print_stacktrace=1 G_SLICE=always-malloc G_DEBUG=gc-friendly ./$(NAME) --color --timed --verbose; exit 0
 	@$(MAKE) fclean > /dev/null
@@ -106,4 +114,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: debug norme symbols test all clean fclean re
+.PHONY: debug norme symbols moulinette test all clean fclean re
