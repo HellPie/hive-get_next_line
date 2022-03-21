@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/19 16:44:25 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/21 13:39:52 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,6 +75,19 @@ debug: all
 norme:
 	$(info Running Norminette ($(shell python3 -m norminette -v)) compliance tests)
 	@python3 -m norminette $(wildcard $(GNL_INC_DIR)/*.h) $(GNL_SRC) | grep "Error\|Warn"; exit 0
+
+symbols: CFLAGS += -fPIC
+symbols: $(LFT_OBJ) $(GNL_SRC)
+	$(info Verifying usage of undefined (external) symbols)
+	@rm -f $(OBJ_DIR)/out.o
+	@$(CC) -Wl,--whole-archive $(LFT_OBJ) -Wl,--no-whole-archive -shared $(GNL_OBJ) -o $(OBJ_DIR)/out.o
+	@nm -uP $(OBJ_DIR)/out.o | grep -w "U"
+	@rm -f $(OBJ_DIR)/out.o
+symbols: fclean
+
+ifeq ($(shell uname -s),Linux)
+test: symbols
+endif
 
 test: debug norme
 	$(info Running tests for $(NAME))
