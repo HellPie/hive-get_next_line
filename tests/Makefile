@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/21 13:39:52 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/21 19:15:54 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,13 +77,12 @@ norme:
 	@python3 -m norminette $(wildcard $(GNL_INC_DIR)/*.h) $(GNL_SRC) | grep "Error\|Warn"; exit 0
 
 symbols: CFLAGS += -fPIC
-symbols: $(LFT_OBJ) $(GNL_SRC)
+symbols: $(LFT_OBJ) $(GNL_OBJ)
 	$(info Verifying usage of undefined (external) symbols)
 	@rm -f $(OBJ_DIR)/out.o
 	@$(CC) -Wl,--whole-archive $(LFT_OBJ) -Wl,--no-whole-archive -shared $(GNL_OBJ) -o $(OBJ_DIR)/out.o
 	@nm -uP $(OBJ_DIR)/out.o | grep -w "U"
-	@rm -f $(OBJ_DIR)/out.o
-symbols: fclean
+	@rm -f $(OBJ_DIR)/out.o $(LFT_OBJ) $(GNL_OBJ)
 
 ifeq ($(shell uname -s),Linux)
 test: symbols
@@ -107,4 +106,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: debug norme test all clean fclean re
+.PHONY: debug norme symbols test all clean fclean re
