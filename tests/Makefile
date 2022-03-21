@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/21 20:51:26 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/21 21:01:56 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,14 +85,14 @@ moulinette: $(LFT_OBJ)
 	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o main.o -c src/main.c
 	@clang -o test_gnl main.o get_next_line.o -I ../libft/includes -L ../libft -lft
 	@./test_gnl Makefile > /dev/null
-	@rm -rf test_gnl main.o get_next_line.o
+	@$(RM) -r test_gnl main.o get_next_line.o
 
 symbols: $(GNL_OBJ)
 	$(info Verifying usage of undefined (external) symbols)
 	@$(MAKE) -C $(LFT_LIB_DIR) symbols > /dev/null
 	@ld -r $(GNL_OBJ) $(wildcard $(LFT_LIB_DIR)/build/**/*.o) -o packed.o
 	@nm -uP packed.o | grep -w "U"
-	@rm -f $(OBJ_DIR)/packed.o; exit 0
+	@$(RM) $(OBJ_DIR)/packed.o; exit 0
 
 test: moulinette debug norme symbols
 	$(info Running tests for $(NAME))
@@ -102,13 +102,13 @@ test: moulinette debug norme symbols
 clean:
 	$(info Removing all objects, $(GNL_OBJ_DIR) and $(OBJ_DIR) if they exists)
 	@$(MAKE) -C $(LFT_LIB_DIR) clean > /dev/null
-	@rm -rf $(GNL_OBJ_DIR)
-	@rm -rf $(OBJ_DIR)
+	@$(RM) -r $(GNL_OBJ_DIR)
+	@$(RM) -r $(OBJ_DIR)
 
 fclean: clean
 	$(info Removing $(NAME) if it exists)
 	@$(MAKE) -C $(LFT_LIB_DIR) fclean > /dev/null
-	@rm -f $(NAME)
+	@$(RM) $(NAME)
 
 re: fclean all
 
