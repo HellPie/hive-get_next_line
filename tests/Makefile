@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/21 21:01:56 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/22 12:46:06 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,9 +89,10 @@ moulinette: $(LFT_OBJ)
 
 symbols: $(GNL_OBJ)
 	$(info Verifying usage of undefined (external) symbols)
+	@mkdir -p $(OBJ_DIR)
 	@$(MAKE) -C $(LFT_LIB_DIR) symbols > /dev/null
-	@ld -r $(GNL_OBJ) $(wildcard $(LFT_LIB_DIR)/build/**/*.o) -o packed.o
-	@nm -uP packed.o | grep -w "U"
+	@ld -r $(GNL_OBJ) $(wildcard $(LFT_LIB_DIR)/build/**/*.o) -o $(OBJ_DIR)/packed.o
+	@nm -uP $(OBJ_DIR)/packed.o | grep -w "U"
 	@$(RM) $(OBJ_DIR)/packed.o; exit 0
 
 test: moulinette debug norme symbols
