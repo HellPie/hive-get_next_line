@@ -6,7 +6,7 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 19:20:01 by drossi            #+#    #+#             */
-/*   Updated: 2022/03/24 17:51:09 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/24 18:26:27 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,11 @@
 
 static t_bool	_read_fd(int fd, t_span *span, ssize_t *out_s_read)
 {
-	if (span->s_data - span->len < BUFF_SIZE)
-	{
-		if (!ft_span_res(span, span->s_data + BUFF_SIZE))
-		{
-			*out_s_read = -1;
-			return (FALSE);
-		}
-	}
-	*out_s_read = read(fd, span->data + span->len, BUFF_SIZE);
+	if (span->s_data - span->len < BUFF_SIZE
+		&& !ft_span_res(span, span->s_data + BUFF_SIZE))
+		*out_s_read = -1;
+	else
+		*out_s_read = read(fd, span->data + span->len, BUFF_SIZE);
 	return (out_s_read > 0);
 }
 
@@ -38,15 +34,13 @@ static int	_crop_str(char **out, t_span *span, size_t len)
 		ft_span_del(span);
 		return (GNL_ERR);
 	}
-	if (span->len != len)
-	{
-		span->len -= len + 1;
-		ft_memcpy(span->data, span->data + len + 1, span->len);
-	}
-	else
+	if (span->len == len)
 	{
 		span->len = 0;
+		return (GNL_OK);
 	}
+	span->len -= len + 1;
+	ft_memcpy(span->data, span->data + len + 1, span->len);
 	return (GNL_OK);
 }
 
@@ -56,9 +50,8 @@ int	get_next_line(const int fd, char **line)
 	char			*endl;
 	ssize_t			s_read;
 
-	if (fd < 0 || fd >= GNL_FD_MAX || !line || read(fd, NULL, 0))
-		return (GNL_ERR);
-	if (!fds[fd].data && ft_span_new(&fds[fd], BUFF_SIZE, sizeof(char)))
+	if (fd < 0 || fd >= GNL_FD_MAX || !line || read(fd, NULL, 0)
+		|| (!fds[fd].data && !ft_span_new(&fds[fd], BUFF_SIZE, sizeof(char))))
 		return (GNL_ERR);
 	s_read = 1;
 	endl = ft_memchr(fds[fd].data, '\n', fds[fd].len);
