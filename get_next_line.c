@@ -6,7 +6,7 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 19:20:01 by drossi            #+#    #+#             */
-/*   Updated: 2022/03/24 18:26:27 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/24 18:32:32 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,12 @@
 #include "ft_span.h"
 #include "get_next_line.h"
 
-static t_bool	_read_fd(int fd, t_span *span, ssize_t *out_s_read)
+static ssize_t	_read_fd(int fd, t_span *span, ssize_t *out_s_read)
 {
 	if (span->s_data - span->len < BUFF_SIZE
 		&& !ft_span_res(span, span->s_data + BUFF_SIZE))
-		*out_s_read = -1;
-	else
-		*out_s_read = read(fd, span->data + span->len, BUFF_SIZE);
-	return (out_s_read > 0);
+		return (*out_s_read = -1);
+	return (*out_s_read = read(fd, span->data + span->len, BUFF_SIZE));
 }
 
 static int	_crop_str(char **out, t_span *span, size_t len)
@@ -55,7 +53,7 @@ int	get_next_line(const int fd, char **line)
 		return (GNL_ERR);
 	s_read = 1;
 	endl = ft_memchr(fds[fd].data, '\n', fds[fd].len);
-	while (!endl && _read_fd(fd, &fds[fd], &s_read))
+	while (!endl && _read_fd(fd, &fds[fd], &s_read) > 0)
 	{
 		endl = ft_memchr(fds[fd].data + fds[fd].len, '\n', (size_t)s_read);
 		fds[fd].len += (size_t)s_read;
