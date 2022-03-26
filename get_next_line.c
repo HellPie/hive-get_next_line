@@ -6,7 +6,7 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 19:20:01 by drossi            #+#    #+#             */
-/*   Updated: 2022/03/24 19:39:56 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/26 01:15:00 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,41 @@
 #include "ft_span.h"
 #include "get_next_line.h"
 
-static ssize_t	_read_fd(int fd, t_span *span, ssize_t *out_s_read)
+static t_bool	_read_fd(int fd, t_span *span, ssize_t *s_out)
 {
-	if (span->s_data - span->len < BUFF_SIZE
-		&& !ft_span_res(span, span->s_data + BUFF_SIZE))
-		return (*out_s_read = -1);
-	return (*out_s_read = read(fd, span->data + span->len, BUFF_SIZE));
+	*s_out = -1;
+	if (span->s_data - span->len < BUFF_SIZE)
+		if (!ft_span_res(span, span->s_data + BUFF_SIZE))
+			return (FALSE);
+	*s_out = read(fd, span->data + span->len, BUFF_SIZE);
+	return (*s_out > 0);
 }
 
-static int	_crop_str(char **out, t_span *span, size_t len)
+static int	_proc_ret(char **out, t_span *span, ssize_t s_read, char *endl)
 {
+	size_t	len;
+
+	if (s_read < 0 || (!s_read && !span->data))
+	{
+		ft_span_del(span);
+		return (s_read);
+	}
+	len = span->len;
+	if (endl)
+		len = endl - (char *)span->data;
 	*out = ft_strsub(span->data, 0, len);
 	if (!*out)
 	{
 		ft_span_del(span);
 		return (GNL_ERR);
 	}
-	if (span->len == len)
+	if (span->len <= len)
 	{
+		ft_bzero(span->data, span->s_data);
 		span->len = 0;
 		return (GNL_OK);
 	}
-	span->len -= len + 1;
-	ft_memcpy(span->data, span->data + len + 1, span->len);
+	ft_memcpy(span->data, (char *)span->data + len + 1, span->len -= len + 1);
 	return (GNL_OK);
 }
 
@@ -48,22 +60,16 @@ int	get_next_line(const int fd, char **line)
 	char			*endl;
 	ssize_t			s_read;
 
-	if (fd < 0 || fd >= GNL_FD_MAX || !line || read(fd, NULL, 0)
+	if (fd < 0 || fd >= GNL_FD_MAX || read(fd, NULL, 0)
 		|| (!fds[fd].data && !ft_span_new(&fds[fd], BUFF_SIZE, sizeof(char))))
 		return (GNL_ERR);
-	s_read = 1;
 	endl = ft_memchr(fds[fd].data, '\n', fds[fd].len);
+	if (endl)
+		return (_proc_ret(line, &fds[fd], 1, endl));
 	while (!endl && _read_fd(fd, &fds[fd], &s_read) > 0)
 	{
 		endl = ft_memchr(fds[fd].data + fds[fd].len, '\n', (size_t)s_read);
 		fds[fd].len += (size_t)s_read;
 	}
-	if (s_read < 0 || (!s_read && !fds[fd].len))
-	{
-		ft_span_del(&fds[fd]);
-		return (s_read);
-	}
-	if (endl)
-		return (_crop_str(line, &fds[fd], endl - (char *)fds[fd].data));
-	return (_crop_str(line, &fds[fd], fds[fd].len));
+	return (_proc_ret(line, &fds[fd], s_read, endl));
 }
