@@ -6,7 +6,7 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 22:50:11 by drossi            #+#    #+#             */
-/*   Updated: 2022/03/20 11:53:58 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/26 01:07:29 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	_proc_files(int *fds, int count)
 				continue ;
 			result = get_next_line(fds[i_fds], &line);
 			printf("%sFD: %2d, L: \"%s\"\n", _tos(result), fds[i_fds], line);
-			if (result == 1)
+			if (result == 1 && line)
 				free(line);
 			else
 			{
