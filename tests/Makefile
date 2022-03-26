@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/22 12:46:06 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/26 00:06:24 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ NORMINETTE ?= python3 -m norminette
 
 ifeq ($(DEBUG),1)
 	$(info Configuring additional debug options.)
-	CFLAGS += -fsanitize=address,undefined -fno-sanitize-recover=all -g -DDEBUG
+	CFLAGS += -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -O1 -g3 -DDEBUG
 endif
 
 # Build, archive and index the static library
@@ -72,7 +72,7 @@ all: $(NAME)
 
 debug:
 	$(info Compiling $(NAME) with debug flags)
-debug: CFLAGS += -fsanitize=address,undefined -fno-sanitize-recover=all -g -DDEBUG
+debug: CFLAGS += -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -O1 -g3 -DDEBUG
 debug: all
 
 norme:
