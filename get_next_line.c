@@ -6,7 +6,7 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 19:20:01 by drossi            #+#    #+#             */
-/*   Updated: 2022/03/26 01:15:00 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/27 17:24:25 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	_proc_ret(char **out, t_span *span, ssize_t s_read, char *endl)
 {
 	size_t	len;
 
-	if (s_read < 0 || (!s_read && !span->data))
+	if (s_read < 0 || (!s_read && !span->len))
 	{
 		ft_span_del(span);
 		return (s_read);
@@ -46,7 +46,6 @@ static int	_proc_ret(char **out, t_span *span, ssize_t s_read, char *endl)
 	}
 	if (span->len <= len)
 	{
-		ft_bzero(span->data, span->s_data);
 		span->len = 0;
 		return (GNL_OK);
 	}
