@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/26 00:06:24 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/27 17:30:40 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,7 +84,7 @@ moulinette: $(LFT_OBJ)
 	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o get_next_line.o -c ../get_next_line.c
 	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o main.o -c src/main.c
 	@clang -o test_gnl main.o get_next_line.o -I ../libft/includes -L ../libft -lft
-	@./test_gnl Makefile > /dev/null
+	@./test_gnl Makefile > ./test_gnl.log; exit 0;
 	@$(RM) -r test_gnl main.o get_next_line.o
 
 symbols: $(GNL_OBJ)
