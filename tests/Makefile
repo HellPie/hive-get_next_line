@@ -6,7 +6,7 @@
 #    By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/11 19:46:05 by drossi            #+#    #+#              #
-#    Updated: 2022/03/27 17:30:40 by drossi           ###   ########.fr        #
+#    Updated: 2022/03/28 19:30:06 by drossi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,7 +82,7 @@ norme:
 moulinette: $(LFT_OBJ)
 	$(info Simulating build instructions like Moulinette according to GNL docs)
 	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o get_next_line.o -c ../get_next_line.c
-	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o main.o -c src/main.c
+	@clang -I ../libft/include -I .. -Wall -Wextra -Werror -o main.o -c src/main-single.c
 	@clang -o test_gnl main.o get_next_line.o -I ../libft/includes -L ../libft -lft
 	@./test_gnl Makefile > ./test_gnl.log; exit 0;
 	@$(RM) -r test_gnl main.o get_next_line.o

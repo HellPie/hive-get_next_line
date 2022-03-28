@@ -6,7 +6,7 @@
 /*   By: drossi <drossi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 22:50:11 by drossi            #+#    #+#             */
-/*   Updated: 2022/03/27 19:30:49 by drossi           ###   ########.fr       */
+/*   Updated: 2022/03/28 16:19:48 by drossi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ int	main(int argc, char **argv)
 		out = get_next_line(fd, &line);
 		if (line)
 		{
-			printf("%s\n", line);
+			printf("%d: \"%s\"\n", out, line);
 			free(line);
 			line = NULL;
 		}
 		else
-			printf("---ERROR--- LINE IS NULL ---ERROR---\n");
+			printf("---ERROR--- LINE IS NULL OUT IS %d ---ERROR---\n", out);
 	}
 	if (out == 0)
 		printf("---END--- REACHED EOF ---END---\n");
